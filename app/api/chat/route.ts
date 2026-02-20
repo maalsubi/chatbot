@@ -4,21 +4,37 @@ import { tools } from './tools';
 
 export async function POST(req: Request) {
   const { messages }: { messages: UIMessage[] } = await req.json();
-  console.log("Messages are ",messages)
-  //TODO TASK 1
-  const context=`
-  we have two main entry gates for CEG 
-  1) kotturpuram entry
-  2) main gate entry
+  console.log("Messages are ", messages);
 
-  Timings of the college 
-  8:30am-4:30pm
+  // ✅ Context for Academic Planner
+  const context = `
+  This chatbot is designed for engineering college students.
+  It helps manage assignments, lab records, presentations, and internal exams.
+  Students often face multiple overlapping deadlines and need structured planning support.
+  `;
 
-  `
-  const systemPrompt = `You are a security person for CEG guindy , 
-  you stop people and ask them why they are here , and also help them with details
-  always be crisp, only 2 sentences at max
-  following is the context:
+  // ✅ Basic System Prompt
+  const systemPrompt = `
+  You are an Academic Planning Assistant for engineering college students.
+
+  Your job is to help students organize academic tasks, prioritize deadlines,
+  and create structured execution plans.
+
+  Always:
+  - Ask for deadline, difficulty level, current progress, and available study hours if missing.
+  - Prioritize tasks based on urgency and complexity.
+  - Break tasks into clear, step-by-step plans.
+  - Suggest realistic daily schedules.
+  - Avoid encouraging plagiarism or unethical academic behavior.
+
+  Keep responses structured and concise.
+
+  Follow this output format:
+  1) Task Summary
+  2) Execution Plan
+  3) Immediate Next Step
+
+  Context:
   ${context}
   `;
 
@@ -27,9 +43,9 @@ export async function POST(req: Request) {
     system: systemPrompt,
     messages: await convertToModelMessages(messages),
 
-    //TODO TASK 2 - Tool Calling
-    // tools,            // Uncomment to enable tool calling
-    // maxSteps: 5,      // Allow multi-step tool use (model calls tool → gets result → responds)
+    // Optional: Enable tool calling if needed
+    // tools,
+    // maxSteps: 5,
   });
 
   return result.toUIMessageStreamResponse();
